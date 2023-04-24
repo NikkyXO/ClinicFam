@@ -6,8 +6,7 @@ import os
 
 SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI')
 
-engine = create_engine(SQLALCHEMY_DATABASE_URI, echo=True, pool_pre_ping=True, pool_size=10, max_overflow=20,
-                       connect_args={'sslmode': 'require'})
+engine = create_engine(SQLALCHEMY_DATABASE_URI)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
