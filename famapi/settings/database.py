@@ -6,6 +6,8 @@ import os
 
 SQLALCHEMY_DATABASE_URI = "postgresql://root:unmXJYXW5Grdlw15EqqApIDPiPsdi6k1@dpg-ch3bm7esi8uk2tdil0o0-a/famwork_db"
 
+# SQLALCHEMY_DATABASE_URI = os.getenv("SQLALCHEMY_DATABASE_URI")
+
 engine = create_engine(SQLALCHEMY_DATABASE_URI)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
