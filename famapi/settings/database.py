@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker
 import pymysql
 import os
 
-SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI')
+SQLALCHEMY_DATABASE_URI = "postgresql://root:unmXJYXW5Grdlw15EqqApIDPiPsdi6k1@dpg-ch3bm7esi8uk2tdil0o0-a/famwork_db"
 
 engine = create_engine(SQLALCHEMY_DATABASE_URI)
 
