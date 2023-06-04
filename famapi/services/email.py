@@ -61,7 +61,7 @@ class Email:
                            </div>
                        </div>
                        '''.format(self.date_created, data)
-        msg.body = f'Click the following link to reset your password: {data}'
+        # msg.body = f'Click the following link to reset your password: {data}'
         try:
             self.mail.connect()
             self.mail.send(msg)

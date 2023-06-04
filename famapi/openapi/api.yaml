@@ -142,46 +142,6 @@ paths:
           description: Bad request. Email field missing or invalid
         "500":
           description: Internal server error
-  /auth/newpassword:
-    put:
-      summary: Reset user password
-      tags:
-        - "Auth"
-      operationId: famapi.blueprints.authentication.user_auth.reset_password
-      requestBody:
-        description: Request body containing the new password and confirm password
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                password:
-                  type: string
-                  description: The new password
-                  minLength: 8
-                  example: "new_password123"
-                confirm_password:
-                  type: string
-                  description: Confirm password
-                  minLength: 8
-                  example: "new_password123"
-      parameters:
-        - in: query
-          name: email
-          schema:
-            type: string
-            description: reset email
-          required: true
-        - in: query
-          name: reset_token
-          schema:
-            type: string
-            description: reset email of user
-          required: true
-      responses:
-        "200":
-          description: Password updated successfully
   /auth/user/update_password:
     put:
       summary: Update a user's password in the App
@@ -294,10 +254,6 @@ paths:
             schema:
               type: object
               properties:
-                email:
-                  type: string
-                  description: User's email address
-                  example: john@example.com
                 first_name:
                   type: string
                   description: User's first name
@@ -334,8 +290,6 @@ paths:
                   type: string
                   description: User's gender
                   example: Male
-              required:
-                - email
       responses:
         "200":
           description: User record updated successfully

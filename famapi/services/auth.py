@@ -4,7 +4,7 @@ from sqlalchemy import exc
 from flask_jwt_extended import (
     create_access_token, create_refresh_token
 )
-
+from typing import Union
 from flask import current_app
 from flask import jsonify
 from flask_api import status
@@ -23,7 +23,7 @@ class Auth:
         """
         pass
 
-    def register_user(self, data: dict) -> User:
+    def register_user(self, data: dict) -> Union[User, dict]:
         """ User registration
         """
         if data:
@@ -31,7 +31,7 @@ class Auth:
                 email = data.get("email").lower()
                 user = db.query(User).filter(User.email == email).first()
                 if user:
-                    raise ValueError(f"User already exists")
+                    return {"msg": "User already exists"}
 
                 password = data.get("password")
                 data.pop("password")

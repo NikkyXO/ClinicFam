@@ -30,14 +30,16 @@ def register_user() -> Union[str, tuple]:
 
     data = request.get_json()
     try:
-        new_user = AUTH.register_user(data)
-        if new_user:
-            response_data = json.loads(new_user.to_json())
+        data_response = AUTH.register_user(data)
+        if isinstance(data_response, User):
+            response_data = json.loads(data_response.to_json())
             return jsonify(msg="Registration successful", data=response_data), status.HTTP_201_CREATED
+        else:
+            return data_response
 
     except Exception as e:
-        raise e
-        # return jsonify(msg=str(e)), status.HTTP_400_BAD_REQUEST
+        # raise e
+        return jsonify(msg=str(e)), status.HTTP_400_BAD_REQUEST
 
 
 @auth_bp.route("/login", methods=["POST"])
@@ -86,7 +88,7 @@ def send_reset_password_link():
             with current_app.app_context():
                 serializer = URLSafeTimedSerializer(current_app.config['JWT_SECRET_KEY'])
             token = serializer.dumps(email, salt='password-reset')
-            reset_url = f'{request.url}/auth/newpassword?email={email}&reset_token={token}'
+            reset_url = f'{request.url}&reset_token={token}'
             new_email = Email(subject="Reset Your Password")
             return new_email.send_email_for_password_reset(recipients=email, data=reset_url)
         except Exception as e:
@@ -146,7 +148,7 @@ def get_user():
 
 
 @jwt_required()
-@auth_bp.route("/user", methods=["POST"])
+@auth_bp.route("/user", methods=["POST", "PUT"])
 def update_user():
     """
     updates a user records
@@ -154,9 +156,13 @@ def update_user():
     phoneNumber, gender, country, country_code, state, city, about_me
     :return: user info formatted data
     """
+
+    email = current_user.email
+    if not email:
+        return jsonify(msg="Unathorized Access!, Please log in for access token"), status.HTTP_400_BAD_REQUEST
+
     try:
         data = request.get_json()
-        email = data.get("email")
         user_account = db.query(User).filter(User.email == email).first()
 
         user_account.firstName = data.get("first_name")
@@ -251,3 +257,20 @@ def user_lookup_callback(_jwt_header, jwt_data):
     print("identity here", identity)
     return db.query(User).filter(User.id == identity).first()
     # return User.objects.get(id=identity)
+
+"""
+{
+  "about_me": "i fight zombies for a living",
+  "city": "lagos",
+  "country": "Nigeria",
+  "country_code": "+123",
+  "first_name": "John",
+  "gender": "Female",
+  "last_name": "Ola",
+  "phone_number": "+234-555-1234",
+  "state": "lagos"
+}
+
+alexisdame2017@gmail.com
+
+"""
