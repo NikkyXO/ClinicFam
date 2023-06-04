@@ -47,7 +47,7 @@ def login():
     : request-body: email, password
     """
     data = request.get_json()
-    email = data.get('email')
+    email = data.get('email').lower()
     password = data.get('password')
     return AUTH.valid_login(email, password)
 

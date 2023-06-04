@@ -28,12 +28,14 @@ class Auth:
         """
         if data:
             try:
-                user = db.query(User).filter(User.email == data.get("email")).first()
+                email = data.get("email").lower()
+                user = db.query(User).filter(User.email == email).first()
                 if user:
                     raise ValueError(f"User already exists")
 
                 password = data.get("password")
                 data.pop("password")
+                data["email"] = email
                 user = User(**data)
                 user.set_password(password)
                 user.status = 1
@@ -62,7 +64,6 @@ class Auth:
         if not user.verify_password(password):
             return jsonify(msg="Invalid email or password."), status.HTTP_400_BAD_REQUEST
 
-        # login the user and update subscription last_logged_in time
         try:
             access_token = create_access_token(identity=str(user.id))
             user.authenticated = True
