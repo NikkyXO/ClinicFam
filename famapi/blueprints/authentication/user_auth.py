@@ -163,22 +163,19 @@ def update_user():
 
     try:
         data = request.get_json()
-        user_account = db.query(User).filter(User.email == email).first()
+        email = data.get("email")
+        user_account = User.objects.get(email=email)
 
-        user_account.firstName = data.get("first_name")
-        user_account.lastName = data.get("last_name")
-        user_account.phoneNumber = data.get("phone_number")
-        user_account.gender = data.get("gender")
-        user_account.country = data.get("country")
-        user_account.country_code = data.get("country_code")
-        user_account.state = data.get("state")
-        user_account.about_me = data.get("about_me")
-        user_account.city = data.get("city")
-        db.add(user_account)
-        db.commit()
+        fields = ["firstName", "lastName", "phoneNumber", "gender", "country",
+                  "country_code", "state", "about_me", "city"]
+        for field in fields:
+            value = data.get(field)
+            if value:
+                setattr(user_account, field, value)
 
+        user_account.save()
         response_data = json.loads(user_account.to_json())
-
+        del response_data["password"]
         return jsonify(data=response_data,
                        msg="Account has been updated successfully"), \
             status.HTTP_200_OK
